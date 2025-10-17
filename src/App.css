@@ -116,6 +116,10 @@ body {
   border-top: 0;
 }
 
+#about{
+  padding-top: 10px;
+}
+
 .hero {
   display: grid;
   gap: 32px;
@@ -169,6 +173,26 @@ body {
   display: block;
 }
 
+.project-media.portrait { --ar: 9/16; }
+
+.project-media.square   { --ar: 1/1; }
+
+.project-media video,
+.project-media img,
+.project-media iframe {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* default */
+}
+
+.project-media.fit video,
+.project-media.fit img,
+.project-media.fit iframe {
+  object-fit: contain; /* no crop; shows bars if aspect differs */
+  background: radial-gradient(40% 80% at 50% 50%, color-mix(in srgb, var(--accent) 10%, transparent), transparent),
+              var(--elev);
+}
+
 /* subtle parallax tilt */
 .hero-media:hover {
   transform: translateY(-2px);
@@ -196,10 +220,11 @@ body {
   border: 1px solid var(--hair);
   box-shadow: var(--shadow);
   overflow: hidden;
-  aspect-ratio: 16/10;
+  aspect-ratio: var(--ar, 16/10); /* respects .portrait / .square */
   display: grid;
   place-items: center;
 }
+
 .project-media video,
 .project-media img {
   width: 100%;
