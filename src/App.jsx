@@ -1,13 +1,23 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./index.css";
 import "./App.css";
+import Carousel from "./components/Carousel.jsx";
+import Modal from "./components/Modal.jsx";
 
 const NAV = [
   { href: "#about", label: "About" },
   { href: "#infinimatch", label: "Infinimatch" },
   { href: "#redmesa", label: "Red Mesa" },
   { href: "#dialdynamics", label: "DialDynamics" },
+  { href: "#planty", label: "Planty" },
+  { href: "#csi", label: "CSI Dry Eye" },
   { href: "#contact", label: "Contact" },
+];
+
+const RED_IMAGES = [
+  "/redmesa/redmesa1.png",
+  "/redmesa/redmesa2.png",
+  "/redmesa/redmesa3.png",
 ];
 
 function useProgress() {
@@ -37,24 +47,35 @@ function useReveals() {
   }, []);
 }
 
-function useScrollSpy(ids) {
-  const [active, setActive] = useState("");
+function useScrollSpy(ids, offset = 84) {
+  const [active, setActive] = useState(ids[0]);
+
   useEffect(() => {
-    const sections = ids
-      .map((id) => document.querySelector(id))
-      .filter(Boolean);
-    const io = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible) setActive("#" + visible.target.id);
-      },
-      { rootMargin: "-40% 0px -50% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] }
-    );
-    sections.forEach((s) => io.observe(s));
-    return () => io.disconnect();
-  }, [ids]);
+    const sects = ids.map((sel) => document.querySelector(sel)).filter(Boolean);
+
+    const compute = () => {
+      const mid = window.innerHeight / 2;
+      let best = { id: ids[0], d: Infinity };
+
+      for (const el of sects) {
+        const r = el.getBoundingClientRect();
+        const d = Math.abs(r.top - offset - mid);
+        if (d < best.d) best = { id: `#${el.id}`, d };
+      }
+      setActive(best.id);
+    };
+
+    compute();
+    window.addEventListener("scroll", compute, { passive: true });
+    window.addEventListener("resize", compute);
+    window.addEventListener("hashchange", compute);
+    return () => {
+      window.removeEventListener("scroll", compute);
+      window.removeEventListener("resize", compute);
+      window.removeEventListener("hashchange", compute);
+    };
+  }, [ids, offset]);
+
   return active;
 }
 
@@ -101,19 +122,28 @@ function useAutoPlayVideos(selectors) {
 }
 
 export default function App() {
+  const [csiOpen, setCsiOpen] = useState(false);
+  const [redOpen, setRedOpen] = useState(false);
+
   useProgress();
   useReveals();
-  const active = useScrollSpy([
-    "#about",
-    "#infinimatch",
-    "#redmesa",
-    "#dialdynamics",
-    "#contact",
-  ]);
+  const active = useScrollSpy(
+    [
+      "#about",
+      "#infinimatch",
+      "#redmesa",
+      "#dialdynamics",
+      "#planty",
+      "#csi",
+      "#contact",
+    ],
+    84
+  );
   useThemeSwap([
     { id: "infinimatch", theme: "infinimatch" },
     { id: "redmesa", theme: "redmesa" },
     { id: "dialdynamics", theme: "dialdynamics" },
+    { id: "csi", theme: "csi" },
   ]);
   useAutoPlayVideos("section video");
 
@@ -125,7 +155,7 @@ export default function App() {
       {/* Sticky Nav */}
       <div className="nav">
         <div className="container nav-inner">
-          <div className="brand">Khalaf El Wadya</div>
+          <div className="brand">Khalaf Elwadya</div>
           <nav>
             {NAV.map((n) => (
               <a
@@ -212,25 +242,28 @@ export default function App() {
                 whiteboard sketch to a beta-tested app on TestFlight.
               </p>
               <div className="pills">
-                {["React", "TypeScript", "API integration", "Analytics"].map(
-                  (t) => (
-                    <span className="pill" key={t}>
-                      {t}
-                    </span>
-                  )
-                )}
+                {[
+                  "Angular",
+                  "Ionic",
+                  "TypeScript",
+                  "API integration",
+                  "AI/ML",
+                  "UX design",
+                  "App development",
+                ].map((t) => (
+                  <span className="pill" key={t}>
+                    {t}
+                  </span>
+                ))}
               </div>
               <div className="actions">
                 <a
-                  className="btn"
-                  href="https://github.com/kelwa413"
+                  className="btn primary"
+                  href="https://infinimatch.app/"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Code
-                </a>
-                <a className="btn" href="#" aria-disabled>
-                  Live Demo
+                  View Website
                 </a>
               </div>
             </div>
@@ -240,17 +273,20 @@ export default function App() {
         {/* Red Mesa */}
         <section id="redmesa" className="section anchor">
           <h2 className="reveal">Red Mesa</h2>
+
           <div className="project flip reveal">
-            <div className="project-media reveal" data-slow>
-              <video
-                playsInline
-                muted
-                controls
-                poster="https://picsum.photos/1280/800?random=22"
-              >
-                <source src="/media/redmesa-demo.mp4" type="video/mp4" />
-              </video>
+            {/* Clickable media opens modal */}
+            <div
+              className="project-media reveal clickable"
+              data-slow
+              role="button"
+              tabIndex={0}
+              onClick={() => setRedOpen(true)}
+              onKeyDown={(e) => e.key === "Enter" && setRedOpen(true)}
+            >
+              <Carousel interval={4000} images={RED_IMAGES} />
             </div>
+
             <div className="project-body reveal">
               <h3>Custom Recommendation Engines</h3>
               <p>
@@ -258,7 +294,12 @@ export default function App() {
                 funnels. Talk outcomes: CTR, retention, conversion, revenue.
               </p>
               <div className="pills">
-                {["Python", "FastAPI", "Postgres", "Docker"].map((t) => (
+                {[
+                  "Python",
+                  "TensorFlow",
+                  "Project Management",
+                  "Requirements Gathering",
+                ].map((t) => (
                   <span className="pill" key={t}>
                     {t}
                   </span>
@@ -266,20 +307,23 @@ export default function App() {
               </div>
               <div className="actions">
                 <a
-                  className="btn"
-                  href="https://github.com/kelwa413"
+                  className="btn primary"
+                  href="https://redmesa.dev/"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Code
-                </a>
-                <a className="btn" href="#" aria-disabled>
-                  Case Study
+                  View Website
                 </a>
               </div>
             </div>
           </div>
         </section>
+
+        <Modal open={redOpen} onClose={() => setRedOpen(false)}>
+          <div className="lightbox">
+            <Carousel interval={5000} controls images={RED_IMAGES} />
+          </div>
+        </Modal>
 
         {/* DialDynamics */}
         <section id="dialdynamics" className="section anchor">
@@ -292,7 +336,7 @@ export default function App() {
                 controls
                 poster="https://picsum.photos/1280/800?random=33"
               >
-                <source src="/media/dialdynamics-demo.mp4" type="video/mp4" />
+                <source src="public/dialdynamics-demo.mp4" type="video/mp4" />
               </video>
             </div>
             <div className="project-body reveal">
@@ -353,17 +397,13 @@ export default function App() {
                 participants.
               </p>
               <div className="pills">
-                {[
-                  "Arduino",
-                  "Python",
-                  "LEGO",
-                  "Hardware",
-                  "Habit Tracking",
-                ].map((t) => (
-                  <span className="pill" key={t}>
-                    {t}
-                  </span>
-                ))}
+                {["Arduino", "Python", "LEGO", "Hardware", "Raspberry Pi"].map(
+                  (t) => (
+                    <span className="pill" key={t}>
+                      {t}
+                    </span>
+                  )
+                )}
               </div>
               <div className="actions">
                 <a
@@ -381,6 +421,79 @@ export default function App() {
             </div>
           </div>
         </section>
+
+        {/* CSI Dry Eye section */}
+        <section id="csi" className="section anchor">
+          <h2 className="reveal">CSI Dry Eye</h2>
+
+          <div className="project reveal">
+            {/* Clickable media opens modal */}
+            <div
+              className="project-media reveal clickable"
+              data-slow
+              role="button"
+              tabIndex={0}
+              onClick={() => setCsiOpen(true)}
+              onKeyDown={(e) => e.key === "Enter" && setCsiOpen(true)}
+            >
+              <Carousel
+                interval={4000}
+                images={[
+                  "/csi/csi-dashboard.png",
+                  "/csi/csi-invoice-create.png",
+                  "/csi/csi-invoice-export.png",
+                  "/csi/csi-packages.png",
+                  "/csi/csi-pricing.png",
+                  "/csi/csi-treatment-plan.png",
+                  "/csi/csi-treatment-plan-status.png",
+                ]}
+              />
+            </div>
+
+            <div className="project-body reveal">
+              <h3>Clinical SaaS for Dry Eye Workflows</h3>
+              <p>
+                CSI Dry Eye is a clinical SaaS platform for ophthalmology
+                practices, supporting assessments, invoicing, and treatment
+                planning. I design and implement full-stack features across
+                Angular and AWS to optimize reliability and clinic efficiency.
+              </p>
+
+              <div className="pills">
+                {[
+                  "Angular",
+                  "TypeScript",
+                  "AWS Lambda",
+                  "DynamoDB",
+                  "UX Design",
+                ].map((t) => (
+                  <span className="pill" key={t}>
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CSI modal lightbox */}
+        <Modal open={csiOpen} onClose={() => setCsiOpen(false)}>
+          <div className="lightbox">
+            <Carousel
+              interval={5000}
+              controls
+              images={[
+                "/csi/csi-dashboard.png",
+                "/csi/csi-invoice-create.png",
+                "/csi/csi-invoice-export.png",
+                "/csi/csi-packages.png",
+                "/csi/csi-pricing.png",
+                "/csi/csi-treatment-plan.png",
+                "/csi/csi-treatment-plan-status.png",
+              ]}
+            />
+          </div>
+        </Modal>
 
         {/* Contact */}
         <section id="contact" className="section anchor reveal">

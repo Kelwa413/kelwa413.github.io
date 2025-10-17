@@ -1,11 +1,11 @@
-/* ---------- Tokens ---------- */
+/* ── Tokens ────────────────────────────────────────────────────────────── */
 :root {
   --bg: #0c0c0f;
   --text: #e8e8ee;
   --muted: #a4a6b0;
   --hair: #1d1f26;
   --elev: #12131a;
-  --accent: #5aa7ff; /* default (About / hero) */
+  --accent: #5aa7ff;
   --accent-2: #89f0d0;
   --radius: 18px;
   --shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
@@ -15,8 +15,6 @@
   --h2: clamp(22px, 3vw, 32px);
   --lead: clamp(16px, 2.2vw, 20px);
 }
-
-/* Theming per section (IO toggles data-theme on <body>) */
 body[data-theme="infinimatch"] {
   --accent: #7aa6ff;
 }
@@ -33,12 +31,12 @@ body[data-theme="dialdynamics"] {
     --text: #0e1014;
     --muted: #596174;
     --hair: #e9eaf0;
-    --elev: #ffffff;
+    --elev: #fff;
     --shadow: 0 18px 60px rgba(8, 10, 40, 0.08);
   }
 }
 
-/* ---------- Page & background ---------- */
+/* ── Page / container ──────────────────────────────────────────────────── */
 body {
   background: radial-gradient(
         1200px 1000px at 85% -10%,
@@ -48,16 +46,15 @@ body {
       no-repeat,
     var(--bg);
   color: var(--text);
-  transition: background 0.6s ease; /* smooth theme swaps */
+  transition: background 0.6s ease;
 }
-
 .container {
   max-width: var(--content);
   margin: 0 auto;
   padding: var(--pad);
 }
 
-/* ---------- Progress bar ---------- */
+/* ── Progress bar ──────────────────────────────────────────────────────── */
 .progress {
   position: fixed;
   inset: 0 0 auto 0;
@@ -73,7 +70,7 @@ body {
   transition: transform 0.06s linear;
 }
 
-/* ---------- Sticky nav ---------- */
+/* ── Sticky nav ────────────────────────────────────────────────────────── */
 .nav {
   position: sticky;
   top: 0;
@@ -98,16 +95,15 @@ body {
   border-radius: 10px;
   transition: color 0.2s, background 0.2s;
 }
-.nav a:hover {
+.nav a:is(:hover, .active) {
   color: var(--text);
   background: color-mix(in srgb, var(--elev) 70%, transparent);
 }
 .nav a.active {
-  color: var(--text);
   background: color-mix(in srgb, var(--accent) 20%, transparent);
-}
+} /* slight emphasis for active */
 
-/* ---------- Hero ---------- */
+/* ── Sections / hero ───────────────────────────────────────────────────── */
 .section {
   padding: 56px 0;
   border-top: 1px solid var(--hair);
@@ -115,8 +111,7 @@ body {
 .section:first-of-type {
   border-top: 0;
 }
-
-#about{
+#about {
   padding-top: 10px;
 }
 
@@ -151,6 +146,7 @@ body {
 }
 
 .hero-media {
+  max-height: 55vh;
   border-radius: calc(var(--radius) + 6px);
   overflow: hidden;
   border: 1px solid var(--hair);
@@ -166,6 +162,9 @@ body {
   transform: translateZ(0);
   will-change: transform;
 }
+.hero-media:hover {
+  transform: translateY(-2px);
+}
 .hero-media img {
   width: 100%;
   height: 100%;
@@ -173,32 +172,7 @@ body {
   display: block;
 }
 
-.project-media.portrait { --ar: 9/16; }
-
-.project-media.square   { --ar: 1/1; }
-
-.project-media video,
-.project-media img,
-.project-media iframe {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;   /* default */
-}
-
-.project-media.fit video,
-.project-media.fit img,
-.project-media.fit iframe {
-  object-fit: contain; /* no crop; shows bars if aspect differs */
-  background: radial-gradient(40% 80% at 50% 50%, color-mix(in srgb, var(--accent) 10%, transparent), transparent),
-              var(--elev);
-}
-
-/* subtle parallax tilt */
-.hero-media:hover {
-  transform: translateY(-2px);
-}
-
-/* ---------- Projects ---------- */
+/* ── Projects (grid + media frame) ─────────────────────────────────────── */
 .project {
   display: grid;
   gap: 28px;
@@ -213,26 +187,63 @@ body {
     grid-template-columns: 1fr;
   }
 }
+.project.flip .project-media {
+  order: 2;
+}
+.project.flip .project-body {
+  order: 1;
+}
+@media (max-width: 1020px) {
+  .project.flip .project-media,
+  .project.flip .project-body {
+    order: initial;
+  }
+}
 
+/* Media frame with dynamic aspect + fit mode + height cap */
 .project-media {
   border-radius: var(--radius);
   background: var(--elev);
   border: 1px solid var(--hair);
   box-shadow: var(--shadow);
   overflow: hidden;
-  aspect-ratio: var(--ar, 16/10); /* respects .portrait / .square */
+  aspect-ratio: var(--ar, 16/10);
   display: grid;
   place-items: center;
+  max-height: 82vh;
 }
-
-.project-media video,
-.project-media img {
+.project-media.portrait {
+  --ar: 9/16;
+}
+.project-media.square {
+  --ar: 1/1;
+}
+.project-media.fit {
+  aspect-ratio: auto;
+  display: block;
+} /* let intrinsic size decide */
+.project-media :is(video, img, iframe) {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
+.project-media.fit :is(video, img, iframe) {
+  object-fit: contain;
+  max-height: 82vh;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+  background: radial-gradient(
+      40% 80% at 50% 50%,
+      color-mix(in srgb, var(--accent) 10%, transparent),
+      transparent
+    ),
+    var(--elev);
+}
 
+/* ── Project text / pills / buttons ────────────────────────────────────── */
 .project-body h3 {
   font-size: var(--h2);
   font-weight: 800;
@@ -241,6 +252,7 @@ body {
   color: var(--muted);
   margin-top: 10px;
 }
+
 .pills {
   display: flex;
   flex-wrap: wrap;
@@ -249,12 +261,18 @@ body {
 }
 .pill {
   font-size: 12px;
-  color: var(--muted);
+  color: var(--text);
   padding: 6px 10px;
   border-radius: 999px;
-  border: 1px solid var(--hair);
-  background: color-mix(in srgb, var(--elev) 70%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--hair));
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--accent) 28%, var(--elev)),
+    color-mix(in srgb, var(--accent) 16%, var(--elev))
+  );
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--accent) 20%, transparent) inset;
 }
+
 .actions {
   display: flex;
   gap: 12px;
@@ -287,20 +305,147 @@ body {
   transform: translateY(1px);
 }
 
-.project.flip .project-media {
-  order: 2;
+body[data-theme="csi"] {
+  --accent: #7fe3ff;
 }
-.project.flip .project-body {
-  order: 1;
+
+/* ── Carousel ───────────────────────────────────────────── */
+.carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--radius);
 }
-@media (max-width: 1020px) {
-  .project.flip .project-media,
-  .project.flip .project-body {
-    order: initial;
+
+.no-scroll {
+  overflow: hidden !important;
+}
+
+.carousel .slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.carousel .slide.active {
+  opacity: 1;
+  transition: opacity 1s ease;
+}
+
+/* Click affordance */
+.clickable {
+  cursor: zoom-in;
+}
+
+/* Modal shell */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, #000 60%, transparent);
+  backdrop-filter: blur(6px) saturate(120%);
+  animation: modal-fade 0.2s ease;
+}
+@keyframes modal-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
-/* ---------- Cinematic reveals ---------- */
+.modal__content {
+  position: relative;
+  width: min(92vw, 1400px);
+  height: min(92vh, 900px);
+  border-radius: calc(var(--radius) + 4px);
+  background: var(--elev);
+  border: 1px solid var(--hair);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+
+/* Close button */
+.modal__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid var(--hair);
+  background: color-mix(in srgb, var(--elev) 85%, transparent);
+  color: var(--text);
+  font-size: 24px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.modal__close:hover {
+  background: color-mix(in srgb, var(--accent) 18%, var(--elev));
+}
+.modal__close:active {
+  transform: translateY(1px);
+}
+
+/* Lightbox area uses the whole modal content */
+.lightbox,
+.lightbox .carousel {
+  width: 100%;
+  height: 100%;
+}
+
+/* Carousel controls (only show in modal version with controls) */
+.carousel__ctrl {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid var(--hair);
+  background: color-mix(in srgb, var(--elev) 88%, transparent);
+  color: var(--text);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s, opacity 0.2s;
+  opacity: 0.9;
+}
+.carousel__ctrl:hover {
+  background: color-mix(in srgb, var(--accent) 18%, var(--elev));
+}
+.carousel__ctrl:active {
+  transform: translateY(-50%) scale(0.98);
+}
+.carousel__ctrl.left {
+  left: 12px;
+}
+.carousel__ctrl.right {
+  right: 12px;
+}
+
+/* Make sure modal slides are fully visible, no crop, rounded corners */
+.modal .carousel .slide {
+  object-fit: contain;
+  padding: 8px;
+  border-radius: var(--radius);
+}
+
+/* ── Reveals (cinematic) ───────────────────────────────────────────────── */
 .reveal {
   opacity: 0;
   transform: translateY(18px) scale(0.98);
@@ -322,15 +467,13 @@ body {
   }
 }
 
-/* ---------- Footer ---------- */
+/* ── Footer / anchors ─────────────────────────────────────────────────── */
 .footer {
   padding: 48px 0 80px;
   color: var(--muted);
   text-align: center;
   border-top: 1px solid var(--hair);
 }
-
-/* ---------- Anchors spacing under sticky nav ---------- */
 .anchor {
   scroll-margin-top: 84px;
 }
