@@ -1,0 +1,311 @@
+/* ---------- Tokens ---------- */
+:root {
+  --bg: #0c0c0f;
+  --text: #e8e8ee;
+  --muted: #a4a6b0;
+  --hair: #1d1f26;
+  --elev: #12131a;
+  --accent: #5aa7ff; /* default (About / hero) */
+  --accent-2: #89f0d0;
+  --radius: 18px;
+  --shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+  --content: 1120px;
+  --pad: clamp(20px, 4vw, 48px);
+  --h1: clamp(40px, 5.6vw, 68px);
+  --h2: clamp(22px, 3vw, 32px);
+  --lead: clamp(16px, 2.2vw, 20px);
+}
+
+/* Theming per section (IO toggles data-theme on <body>) */
+body[data-theme="infinimatch"] {
+  --accent: #7aa6ff;
+}
+body[data-theme="redmesa"] {
+  --accent: #ff6a6a;
+}
+body[data-theme="dialdynamics"] {
+  --accent: #5affc3;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #fbfbfe;
+    --text: #0e1014;
+    --muted: #596174;
+    --hair: #e9eaf0;
+    --elev: #ffffff;
+    --shadow: 0 18px 60px rgba(8, 10, 40, 0.08);
+  }
+}
+
+/* ---------- Page & background ---------- */
+body {
+  background: radial-gradient(
+        1200px 1000px at 85% -10%,
+        color-mix(in srgb, var(--accent) 10%, var(--bg)),
+        transparent
+      )
+      no-repeat,
+    var(--bg);
+  color: var(--text);
+  transition: background 0.6s ease; /* smooth theme swaps */
+}
+
+.container {
+  max-width: var(--content);
+  margin: 0 auto;
+  padding: var(--pad);
+}
+
+/* ---------- Progress bar ---------- */
+.progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 3px;
+  z-index: 60;
+  background: linear-gradient(
+    90deg,
+    var(--accent),
+    color-mix(in srgb, var(--accent) 30%, transparent)
+  );
+  transform-origin: 0 50%;
+  transform: scaleX(var(--scroll, 0));
+  transition: transform 0.06s linear;
+}
+
+/* ---------- Sticky nav ---------- */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: saturate(140%) blur(10px);
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  border-bottom: 1px solid var(--hair);
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.brand {
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.nav a {
+  color: var(--muted);
+  padding: 10px 12px;
+  border-radius: 10px;
+  transition: color 0.2s, background 0.2s;
+}
+.nav a:hover {
+  color: var(--text);
+  background: color-mix(in srgb, var(--elev) 70%, transparent);
+}
+.nav a.active {
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+/* ---------- Hero ---------- */
+.section {
+  padding: 56px 0;
+  border-top: 1px solid var(--hair);
+}
+.section:first-of-type {
+  border-top: 0;
+}
+
+.hero {
+  display: grid;
+  gap: 32px;
+  grid-template-columns: 1.2fr 0.8fr;
+  align-items: center;
+}
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+}
+
+.kicker {
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+.h1 {
+  font-size: var(--h1);
+  font-weight: 900;
+  line-height: 1.02;
+  margin: 8px 0 12px;
+}
+.lead {
+  font-size: var(--lead);
+  color: var(--muted);
+  max-width: 60ch;
+}
+
+.hero-media {
+  border-radius: calc(var(--radius) + 6px);
+  overflow: hidden;
+  border: 1px solid var(--hair);
+  box-shadow: var(--shadow);
+  aspect-ratio: 4/5;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--accent) 10%, var(--elev)),
+    var(--elev)
+  );
+  display: grid;
+  place-items: center;
+  transform: translateZ(0);
+  will-change: transform;
+}
+.hero-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* subtle parallax tilt */
+.hero-media:hover {
+  transform: translateY(-2px);
+}
+
+/* ---------- Projects ---------- */
+.project {
+  display: grid;
+  gap: 28px;
+  align-items: center;
+  grid-template-columns: 1fr 1fr;
+}
+.project + .project {
+  margin-top: 40px;
+}
+@media (max-width: 1020px) {
+  .project {
+    grid-template-columns: 1fr;
+  }
+}
+
+.project-media {
+  border-radius: var(--radius);
+  background: var(--elev);
+  border: 1px solid var(--hair);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  aspect-ratio: 16/10;
+  display: grid;
+  place-items: center;
+}
+.project-media video,
+.project-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.project-body h3 {
+  font-size: var(--h2);
+  font-weight: 800;
+}
+.project-body p {
+  color: var(--muted);
+  margin-top: 10px;
+}
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+.pill {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--hair);
+  background: color-mix(in srgb, var(--elev) 70%, transparent);
+}
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--hair);
+  background: var(--elev);
+  color: var(--text);
+  transition: transform 0.1s, background 0.2s, border-color 0.2s,
+    box-shadow 0.2s;
+}
+.btn:hover {
+  background: color-mix(in srgb, var(--elev) 90%, var(--accent));
+  border-color: color-mix(in srgb, var(--hair) 60%, var(--accent));
+}
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #06101e;
+  font-weight: 700;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+
+.project.flip .project-media {
+  order: 2;
+}
+.project.flip .project-body {
+  order: 1;
+}
+@media (max-width: 1020px) {
+  .project.flip .project-media,
+  .project.flip .project-body {
+    order: initial;
+  }
+}
+
+/* ---------- Cinematic reveals ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px) scale(0.98);
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.in[data-slow] {
+  transition-duration: 0.9s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal.in {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  padding: 48px 0 80px;
+  color: var(--muted);
+  text-align: center;
+  border-top: 1px solid var(--hair);
+}
+
+/* ---------- Anchors spacing under sticky nav ---------- */
+.anchor {
+  scroll-margin-top: 84px;
+}

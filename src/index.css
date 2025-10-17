@@ -1,0 +1,13 @@
+/* minimal reset only — keep design in App.css */
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "SF Pro Text", "Inter",
+    Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
