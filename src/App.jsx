@@ -168,11 +168,7 @@ export default function App() {
             </div>
           </div>
           <div className="hero-media reveal" aria-label="Portrait">
-            {/* Replace with your real photo */}
-            <img
-              src="https://picsum.photos/880/1100?grayscale"
-              alt="Portrait"
-            />
+            <img src="src\assets\headshot2bw.jpeg" alt="Portrait" />
           </div>
         </div>
       </header>
@@ -186,9 +182,12 @@ export default function App() {
             className="lead"
             style={{ color: "var(--muted)", maxWidth: "70ch", marginTop: 8 }}
           >
-            Brief positioning statement about your craft and philosophy. Keep it
-            high-signal and product-oriented. Mention the outcomes you drive,
-            not just tools.
+            I’m a full-stack developer passionate about turning ideas into real,
+            usable products. Over the past few years, I’ve co-founded startups,
+            helped launch apps from whiteboard sketches, and built production
+            systems from client conversations alone. I love the challenge of
+            taking an early concept, translating it into a working prototype,
+            and scaling it into something people actually use.
           </p>
         </section>
 
@@ -209,9 +208,8 @@ export default function App() {
             <div className="project-body reveal">
               <h3>Personalized Discovery Engine</h3>
               <p>
-                One-line elevator pitch. A few sentences of concise, confident
-                description—what it is, who it’s for, and the measurable
-                benefit.
+                A mobile app that uses AI to recommend movies. Built from a
+                whiteboard sketch to a beta-tested app on TestFlight.
               </p>
               <div className="pills">
                 {["React", "TypeScript", "API integration", "Analytics"].map(
@@ -324,6 +322,60 @@ export default function App() {
                 </a>
                 <a className="btn" href="#" aria-disabled>
                   Live Demo
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Hackathon Win — Planty */}
+        <section id="planty" className="section anchor">
+          <h2 className="reveal">Hackathon Win — Planty</h2>
+          <div className="project flip reveal">
+            <div className="project-media portrait fit reveal" data-slow>
+              <video
+                playsInline
+                muted
+                controls
+                preload="metadata"
+                poster="/media/planty-thumb.png"
+              >
+                <source src="/hackathon-video.mp4" type="video/mp4" />
+              </video>
+            </div>
+
+            <div className="project-body reveal">
+              <h3>🏆 MRU Hacks 2025 — “Planty”</h3>
+              <p>
+                A real LEGO plant that reacts to your habits — stay consistent
+                and it thrives, fall off and it droops. Built in 24 hours with
+                zero hardware experience; won first place out of over 100
+                participants.
+              </p>
+              <div className="pills">
+                {[
+                  "Arduino",
+                  "Python",
+                  "LEGO",
+                  "Hardware",
+                  "Habit Tracking",
+                ].map((t) => (
+                  <span className="pill" key={t}>
+                    {t}
+                  </span>
+                ))}
+              </div>
+              <div className="actions">
+                <a
+                  className="btn primary"
+                  href="https://github.com/kelwa413/Planty"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  View GitHub Repo
+                </a>
+                <a className="btn" href="#" aria-disabled>
+                  Demo Video
                 </a>
               </div>
             </div>
