@@ -124,6 +124,7 @@ function useAutoPlayVideos(selectors) {
 export default function App() {
   const [csiOpen, setCsiOpen] = useState(false);
   const [redOpen, setRedOpen] = useState(false);
+  const [infinimatchOpen, setInfinimatchOpen] = useState(false);
 
   useProgress();
   useReveals();
@@ -186,9 +187,8 @@ export default function App() {
             <div className="actions" style={{ marginTop: 18 }}>
               <a
                 className="btn primary"
-                href="/resume.pdf"
-                target="_blank"
-                rel="noreferrer"
+                href="resume.pdf"
+                download="resume.pdf"
               >
                 Download Résumé
               </a>
@@ -225,50 +225,65 @@ export default function App() {
         <section id="infinimatch" className="section anchor">
           <h2 className="reveal">Infinimatch</h2>
           <div className="project reveal">
-            <div className="project-media reveal" data-slow>
-              <video
-                playsInline
-                muted
-                controls
-                poster="https://picsum.photos/1280/800?random=11"
-              >
-                <source src="/media/infinimatch-demo.mp4" type="video/mp4" />
-              </video>
+            <div
+              className="project-media portrait reveal clickable"
+              data-slow
+              role="button"
+              tabIndex={0}
+              onClick={() => setInfinimatchOpen(true)}
+              onKeyDown={(e) => e.key === "Enter" && setInfinimatchOpen(true)}
+            >
+              <Carousel
+                interval={4000}
+                images={[
+                  "/infinimatch/infinimatch-left.png",
+                  "/infinimatch/infinimatch-right.png",
+                  "/infinimatch/infinimatch-swiper.png",
+                  "/infinimatch/infinimatch-expanded.png",
+                  "/infinimatch/infinimatch-liked.png",
+                  "/infinimatch/infinimatch-review.png",
+                  "/infinimatch/infinimatch-profile.png",
+                ]}
+              />
             </div>
+
             <div className="project-body reveal">
-              <h3>Personalized Discovery Engine</h3>
+              <h3>Personalized Content Discovery</h3>
               <p>
                 A mobile app that uses AI to recommend movies. Built from a
-                whiteboard sketch to a beta-tested app on TestFlight.
+                whiteboard sketch to a beta-tested app on TestFlight. Designed
+                for delight and speed— each swipe teaches the model a little
+                more about the viewer.
               </p>
               <div className="pills">
-                {[
-                  "Angular",
-                  "Ionic",
-                  "TypeScript",
-                  "API integration",
-                  "AI/ML",
-                  "UX design",
-                  "App development",
-                ].map((t) => (
-                  <span className="pill" key={t}>
-                    {t}
-                  </span>
-                ))}
-              </div>
-              <div className="actions">
-                <a
-                  className="btn primary"
-                  href="https://infinimatch.app/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  View Website
-                </a>
+                {["React", "TypeScript", "API Integration", "Analytics"].map(
+                  (t) => (
+                    <span className="pill" key={t}>
+                      {t}
+                    </span>
+                  )
+                )}
               </div>
             </div>
           </div>
         </section>
+
+        {/* Infinimatch Modal Lightbox */}
+        <Modal open={infinimatchOpen} onClose={() => setInfinimatchOpen(false)}>
+          <div className="lightbox">
+            <Carousel
+              interval={5000}
+              controls
+              images={[
+                "/infinimatch/infinimatch-left.png",
+                "/infinimatch/infinimatch-right.png",
+                "/infinimatch/infinimatch-swiper.png",
+                "/infinimatch/infinimatch-expanded.png",
+                "/infinimatch/infinimatch-tut.png",
+              ]}
+            />
+          </div>
+        </Modal>
 
         {/* Red Mesa */}
         <section id="redmesa" className="section anchor">
@@ -526,9 +541,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer className="footer">
-        © {new Date().getFullYear()} Khalaf El Wadya — Built with intent.
-      </footer>
+      <footer className="footer">Khalaf Elwadya — Built with intent.</footer>
     </>
   );
 }
