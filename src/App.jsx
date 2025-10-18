@@ -182,7 +182,7 @@ export default function App() {
             </h1>
             <p className="lead">
               Angular & React front-ends. Serverless on AWS. Clean data flows.
-              Thoughtful details that feel inevitable.
+              Thoughtful details that are built with intent.
             </p>
             <div className="actions" style={{ marginTop: 18 }}>
               <a
@@ -252,7 +252,7 @@ export default function App() {
               <p>
                 A mobile app that uses AI to recommend movies. Built from a
                 whiteboard sketch to a beta-tested app on TestFlight. Designed
-                for delight and speed— each swipe teaches the model a little
+                for delight and speed, each swipe teaches the model a little
                 more about the viewer.
               </p>
               <div className="pills">
@@ -398,7 +398,7 @@ export default function App() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Website
+                  View Website
                 </a>
               </div>
             </div>
@@ -424,7 +424,7 @@ export default function App() {
             <div className="project-body reveal">
               <h3>🏆 MRU Hacks 2025 — “Planty”</h3>
               <p>
-                A real LEGO plant that reacts to your habits — stay consistent
+                A real LEGO plant that reacts to your habits, stay consistent
                 and it thrives, fall off and it droops. Built in 24 hours with
                 zero hardware experience; won first place out of over 100
                 participants.
