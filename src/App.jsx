@@ -531,7 +531,7 @@ export default function App() {
             product-focused teams.
           </p>
           <div className="actions" style={{ marginTop: 12 }}>
-            <a className="btn primary" href="mailto:khalafelwadya@example.com">
+            <a className="btn primary" href="mailto:khalafelwadya@gmail.com">
               Email me
             </a>
             <a
