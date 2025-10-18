@@ -430,13 +430,11 @@ export default function App() {
                 participants.
               </p>
               <div className="pills">
-                {["Arduino", "Python", "LEGO", "Hardware", "Raspberry Pi"].map(
-                  (t) => (
-                    <span className="pill" key={t}>
-                      {t}
-                    </span>
-                  )
-                )}
+                {["Arduino", "Python", "Hardware", "Raspberry Pi"].map((t) => (
+                  <span className="pill" key={t}>
+                    {t}
+                  </span>
+                ))}
               </div>
               <div className="actions">
                 <a
@@ -495,7 +493,7 @@ export default function App() {
                   "TypeScript",
                   "AWS Lambda",
                   "DynamoDB",
-                  "UX Design",
+                  "UI/UX Design",
                 ].map((t) => (
                   <span className="pill" key={t}>
                     {t}
