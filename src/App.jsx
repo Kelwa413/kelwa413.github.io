@@ -198,7 +198,7 @@ export default function App() {
             </div>
           </div>
           <div className="hero-media reveal" aria-label="Portrait">
-            <img src="src\assets\headshot2bw.jpeg" alt="Portrait" />
+            <img src="/headshot2bw.jpeg" alt="Portrait" />
           </div>
         </div>
       </header>
@@ -372,7 +372,7 @@ export default function App() {
                 controls
                 poster="https://picsum.photos/1280/800?random=33"
               >
-                <source src="public/dialdynamics-demo.mp4" type="video/mp4" />
+                <source src="/dialdynamics-demo.mp4" type="video/mp4" />
               </video>
             </div>
             <div className="project-body reveal">
