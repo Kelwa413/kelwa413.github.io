@@ -176,9 +176,9 @@ export default function App() {
       <header className="container section" id="top">
         <div className="hero">
           <div className="reveal" data-slow>
-            <div className="kicker">Full-Stack Engineer • Product-minded</div>
+            <div className="kicker">Full-Stack Developer • Product-minded</div>
             <h1 className="h1">
-              Design-level engineering for teams that demand polish & velocity.
+              Design-level development for teams that demand polish & velocity.
             </h1>
             <p className="lead">
               Angular & React front-ends. Serverless on AWS. Clean data flows.
@@ -256,13 +256,28 @@ export default function App() {
                 more about the viewer.
               </p>
               <div className="pills">
-                {["React", "TypeScript", "API Integration", "Analytics"].map(
-                  (t) => (
-                    <span className="pill" key={t}>
-                      {t}
-                    </span>
-                  )
-                )}
+                {[
+                  "Angular",
+                  "Ionic",
+                  "TypeScript",
+                  "API Integration",
+                  "AI/ML",
+                  "TestFlight",
+                ].map((t) => (
+                  <span className="pill" key={t}>
+                    {t}
+                  </span>
+                ))}
+              </div>
+              <div className="actions">
+                <a
+                  className="btn primary"
+                  href="https://infinimatch.app/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  View Website
+                </a>
               </div>
             </div>
           </div>
@@ -279,7 +294,9 @@ export default function App() {
                 "/infinimatch/infinimatch-right.png",
                 "/infinimatch/infinimatch-swiper.png",
                 "/infinimatch/infinimatch-expanded.png",
-                "/infinimatch/infinimatch-tut.png",
+                "/infinimatch/infinimatch-liked.png",
+                "/infinimatch/infinimatch-review.png",
+                "/infinimatch/infinimatch-profile.png",
               ]}
             />
           </div>
@@ -305,8 +322,12 @@ export default function App() {
             <div className="project-body reveal">
               <h3>Custom Recommendation Engines</h3>
               <p>
-                Focused on rapid integration and measurable lift for startup
-                funnels. Talk outcomes: CTR, retention, conversion, revenue.
+                Red Mesa creates custom AI solutions that fit your business
+                needs. Efficient, focused, and integration ready, our solutions
+                solve real problems without unnecessary complexity. We don’t
+                deliver one-size-fits-all LLMs. Instead, we tailor lightweight
+                systems to your data and infrastructure, deployable on the cloud
+                or on premises.
               </p>
               <div className="pills">
                 {[
@@ -357,9 +378,9 @@ export default function App() {
             <div className="project-body reveal">
               <h3>AI-Aided Cold-Calling Trainer</h3>
               <p>
-                A clear single paragraph that sells the problem, solution, and
-                result. Keep it buyer-friendly: what changed for users after
-                adopting it?
+                DialDynamics is an AI-powered platform designed to help sales
+                professionals practice and perfect their cold-calling skills
+                through real-time simulations, feedback, and analytics.
               </p>
               <div className="pills">
                 {["Next.js/React", "Node", "Scoring engine", "UX research"].map(
@@ -372,15 +393,12 @@ export default function App() {
               </div>
               <div className="actions">
                 <a
-                  className="btn"
-                  href="https://github.com/kelwa413"
+                  className="btn primary"
+                  href="https://www.dialdynamics.ca/"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Code
-                </a>
-                <a className="btn" href="#" aria-disabled>
-                  Live Demo
+                  Website
                 </a>
               </div>
             </div>
@@ -428,9 +446,6 @@ export default function App() {
                   rel="noreferrer"
                 >
                   View GitHub Repo
-                </a>
-                <a className="btn" href="#" aria-disabled>
-                  Demo Video
                 </a>
               </div>
             </div>
