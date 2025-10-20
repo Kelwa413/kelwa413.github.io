@@ -1,0 +1,151 @@
+/* ===== Modal + Carousel (portrait/landscape variants) ===== */
+
+:root {
+  --radius: 18px;
+  --hair: #1d1f26;
+  --elev: #12131a;
+  --text: #e8e8ee;
+  --accent: #5aa7ff;
+  --shadow: 0 18px 60px rgba(0,0,0,.35);
+}
+
+/* ---- Modal shell ---- */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0,0,0,.6);
+  z-index: 1000;
+}
+
+.modal__content {
+  position: relative;
+  width: var(--modal-w, min(1200px, 96vw));
+  height: var(--modal-h, 90vh);
+  max-width: 96vw;
+  max-height: 90vh;
+  background: var(--elev);
+  border: 1px solid var(--hair);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+/* Variants control the size via CSS variables */
+.modal.modal--portrait .modal__content {
+  /* Tall lightbox for phone/portrait screens */
+  --modal-h: 90vh;
+  /* width tied to height so it stays portrait-ish; clamp keeps it reasonable */
+  --modal-w: clamp(320px, 56vh, 96vw);
+}
+
+.modal.modal--landscape .modal__content {
+  /* Wide lightbox for desktop screenshots */
+  --modal-w: min(1200px, 96vw);
+  /* a bit shorter so landscape feels wider; tweak if you like */
+  --modal-h: min(72vh, 900px);
+}
+
+/* Small screens: always use near-full screen */
+@media (max-width: 720px) {
+  .modal__content {
+    --modal-w: 96vw;
+    --modal-h: 90vh;
+  }
+}
+
+/* Close button */
+.modal__close {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 42px; height: 42px;
+  border: 0;
+  border-radius: 12px;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  background: color-mix(in srgb, var(--elev) 85%, transparent);
+  color: var(--text);
+  z-index: 3;
+}
+.modal__close:hover { background: color-mix(in srgb, var(--accent) 18%, var(--elev)); }
+.modal__close:active { transform: translateY(1px); }
+
+/* Lightbox area uses the whole modal content */
+.lightbox,
+.lightbox .carousel {
+  width: 100%;
+  height: 100%;
+}
+
+/* ---- Carousel core ---- */
+.carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--radius);
+}
+
+.carousel .slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .6s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* modal default: show full image */
+  background: radial-gradient(40% 80% at 50% 50%, color-mix(in srgb, var(--accent) 10%, transparent), transparent);
+}
+.carousel .slide.active { opacity: 1; }
+
+/* If you ever embed the carousel inside a project card (not modal),
+   you can opt it into cover-fill: */
+.project .carousel .slide { object-fit: cover; }
+
+/* Controls (prev/next) */
+.carousel__btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px; height: 44px;
+  border-radius: 999px;
+  border: 1px solid var(--hair);
+  background: color-mix(in srgb, var(--elev) 88%, transparent);
+  color: var(--text);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background .2s, transform .1s, opacity .2s;
+  opacity: .95;
+}
+.carousel__btn:hover { background: color-mix(in srgb, var(--accent) 18%, var(--elev)); }
+.carousel__btn:active { transform: translateY(-50%) scale(.98); }
+.carousel__btn.prev { left: 12px; }
+.carousel__btn.next { right: 12px; }
+
+/* Dots */
+.carousel__dots {
+  position: absolute;
+  left: 50%; bottom: 10px;
+  transform: translateX(-50%);
+  display: flex; gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--elev) 85%, transparent);
+  border: 1px solid var(--hair);
+}
+.carousel__dots .dot {
+  width: 8px; height: 8px;
+  border-radius: 999px; border: 0;
+  background: color-mix(in srgb, var(--text) 30%, transparent);
+  opacity: .6; cursor: pointer;
+}
+.carousel__dots .dot.on { background: var(--accent); opacity: 1; }
+
+/* Click affordance on inline cards */
+.clickable { cursor: zoom-in; }
+
+/* Optional: no-scroll class used by your scroll-lock hook */
+.no-scroll { overflow: hidden !important; }

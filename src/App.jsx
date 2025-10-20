@@ -284,7 +284,11 @@ export default function App() {
         </section>
 
         {/* Infinimatch Modal Lightbox */}
-        <Modal open={infinimatchOpen} onClose={() => setInfinimatchOpen(false)}>
+        <Modal
+          open={infinimatchOpen}
+          onClose={() => setInfinimatchOpen(false)}
+          variant="portrait"
+        >
           <div className="lightbox">
             <Carousel
               interval={5000}

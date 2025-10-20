@@ -1,8 +1,13 @@
 import { useEffect } from "react";
 import useScrollLock from "../hooks/useScrollLock";
 
-export default function Modal({ open, onClose, children }) {
-  // ✅ Hooks are ALWAYS called, regardless of `open`
+export default function Modal({
+  open,
+  onClose,
+  children,
+  variant = "landscape",
+}) {
+  // Hooks are ALWAYS called, regardless of `open`
   useScrollLock(open);
 
   useEffect(() => {
@@ -14,9 +19,13 @@ export default function Modal({ open, onClose, children }) {
 
   // Rendering can be conditional AFTER hooks are called
   if (!open) return null;
-
   return (
-    <div className="modal" role="dialog" aria-modal="true" onClick={onClose}>
+    <div
+      className={`modal modal--${variant}`}
+      role="dialog"
+      aria-modal="true"
+      onClick={onClose}
+    >
       <div className="modal__content" onClick={(e) => e.stopPropagation()}>
         <button className="modal__close" onClick={onClose} aria-label="Close">
           ×

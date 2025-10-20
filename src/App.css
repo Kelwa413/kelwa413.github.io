@@ -309,6 +309,15 @@ body[data-theme="csi"] {
   --accent: #7fe3ff;
 }
 
+.btn,
+.btn.primary,
+.btn:hover,
+.btn.primary:hover,
+.btn:focus {
+  text-decoration: none;
+}
+
+
 /* ── Carousel ───────────────────────────────────────────── */
 .carousel {
   position: relative;
@@ -337,6 +346,8 @@ body[data-theme="csi"] {
   transition: opacity 1s ease;
 }
 
+
+
 /* Click affordance */
 .clickable {
   cursor: zoom-in;
@@ -346,12 +357,10 @@ body[data-theme="csi"] {
 .modal {
   position: fixed;
   inset: 0;
-  z-index: 1000;
   display: grid;
   place-items: center;
-  background: color-mix(in srgb, #000 60%, transparent);
-  backdrop-filter: blur(6px) saturate(120%);
-  animation: modal-fade 0.2s ease;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
 }
 @keyframes modal-fade {
   from {
@@ -364,16 +373,15 @@ body[data-theme="csi"] {
 
 .modal__content {
   position: relative;
-  width: min(92vw, 1400px);
-  height: min(92vh, 900px);
-  border-radius: calc(var(--radius) + 4px);
+  max-width: min(1200px, 96vw);
+  max-height: 90vh;
   background: var(--elev);
   border: 1px solid var(--hair);
-  box-shadow: var(--shadow);
+  border-radius: var(--radius);
   overflow: hidden;
-  display: grid;
-  place-items: center;
-  padding: 0;
+  box-shadow: var(--shadow);
+  height: 90vh;
+  width: 45vh;
 }
 
 /* Close button */
@@ -381,18 +389,16 @@ body[data-theme="csi"] {
   position: absolute;
   top: 10px;
   right: 10px;
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-  border: 1px solid var(--hair);
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 12px;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
   background: color-mix(in srgb, var(--elev) 85%, transparent);
   color: var(--text);
-  font-size: 24px;
-  line-height: 1;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+  z-index: 3;
 }
 .modal__close:hover {
   background: color-mix(in srgb, var(--accent) 18%, var(--elev));
@@ -437,6 +443,64 @@ body[data-theme="csi"] {
 .carousel__ctrl.right {
   right: 12px;
 }
+
+/* Make both names work */
+.carousel__btn { /* alias to your existing ctrl styles */
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid var(--hair);
+  background: color-mix(in srgb, var(--elev) 88%, transparent);
+  color: var(--text);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s, opacity 0.2s;
+  opacity: 0.9;
+}
+.carousel__btn:hover { background: color-mix(in srgb, var(--accent) 18%, var(--elev)); }
+.carousel__btn:active { transform: translateY(-50%) scale(0.98); }
+.carousel__btn.prev { left: 12px; }
+.carousel__btn.next { right: 12px; }
+
+
+.carousel__dots {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--elev) 85%, transparent);
+  border: 1px solid var(--hair);
+}
+
+.carousel__dots .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  border: 0;
+  background: color-mix(in srgb, var(--text) 30%, transparent);
+  opacity: 0.6;
+  cursor: pointer;
+}
+.carousel__dots .dot.on {
+  background: var(--accent);
+  opacity: 1;
+}
+
+
+/* Default: fill card */
+.project .carousel .slide { object-fit: cover; }
+
+/* Modal: show full image without crop */
+.modal .carousel .slide { object-fit: contain; padding: 8px; border-radius: var(--radius); }
+
 
 /* Make sure modal slides are fully visible, no crop, rounded corners */
 .modal .carousel .slide {
