@@ -1,10 +1,17 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import "./index.css";
 import "./App.css";
 import Carousel from "./components/Carousel.jsx";
 import Modal from "./components/Modal.jsx";
+import headshot from "./assets/headshot2bw.jpeg";
 
-const NAV = [
+const NAV_PRIMARY = [
+  { href: "#about", label: "About" },
+  { href: "#infinimatch", label: "Work" },
+  { href: "#contact", label: "Contact" },
+];
+
+const NAV_DIRECTORY = [
   { href: "#about", label: "About" },
   { href: "#infinimatch", label: "Infinimatch" },
   { href: "#redmesa", label: "Red Mesa" },
@@ -13,6 +20,14 @@ const NAV = [
   { href: "#csi", label: "CSI Dry Eye" },
   { href: "#contact", label: "Contact" },
 ];
+
+const WORK_ANCHORS = new Set([
+  "#infinimatch",
+  "#redmesa",
+  "#dialdynamics",
+  "#planty",
+  "#csi",
+]);
 
 const RED_IMAGES = [
   "/redmesa/redmesa1.png",
@@ -157,12 +172,20 @@ export default function App() {
       <div className="nav">
         <div className="container nav-inner">
           <div className="brand">Khalaf Elwadya</div>
-          <nav>
-            {NAV.map((n) => (
+          <nav className="nav-primary">
+            {NAV_PRIMARY.map((n) => (
               <a
                 key={n.href}
                 href={n.href}
-                className={active === n.href ? "active" : ""}
+                className={
+                  n.href === "#infinimatch"
+                    ? WORK_ANCHORS.has(active)
+                      ? "active"
+                      : ""
+                    : active === n.href
+                    ? "active"
+                    : ""
+                }
                 aria-label={n.label}
               >
                 {n.label}
@@ -175,7 +198,7 @@ export default function App() {
       {/* Hero */}
       <header className="container section" id="top">
         <div className="hero">
-          <div className="reveal" data-slow>
+          <div className="hero-copy reveal" data-slow>
             <div className="kicker">Full-Stack Developer • Product-minded</div>
             <h1 className="h1">
               Design-level development for teams that demand polish & velocity.
@@ -198,13 +221,33 @@ export default function App() {
             </div>
           </div>
           <div className="hero-media reveal" aria-label="Portrait">
-            <img src="src\assets\headshot2bw.jpeg" alt="Portrait" />
+            <img src={headshot} alt="Portrait" />
           </div>
         </div>
       </header>
 
       {/* Main */}
       <main className="container">
+        <section className="section mobile-directory reveal" aria-label="Jump links">
+          <h2>Browse Sections</h2>
+          <div className="directory-card">
+            {NAV_DIRECTORY.map((n) => (
+              <a
+                key={`mobile-${n.href}`}
+                href={n.href}
+                className={`directory-link ${
+                  active === n.href || (n.href === "#infinimatch" && WORK_ANCHORS.has(active))
+                    ? "active"
+                    : ""
+                }`}
+              >
+                <span>{n.label}</span>
+                <span aria-hidden>›</span>
+              </a>
+            ))}
+          </div>
+        </section>
+
         {/* About */}
         <section id="about" className="section anchor reveal">
           <h2>About</h2>
