@@ -373,7 +373,7 @@ export default function App() {
         ))}
       </div>
 
-      {/* Craft — the "how did he do that" section */}
+      {/* Craft — this is the "how did he do that" section */}
       <CraftSection />
 
       {/* Contact */}
