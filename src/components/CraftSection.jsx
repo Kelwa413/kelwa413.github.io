@@ -105,7 +105,7 @@ const CODE_LINES = [
 const METRICS = [
   { value: "5", label: "Shipped Products" },
   { value: "1st", label: "Hackathon Finish" },
-  { value: "0", suffix: "→1", label: "Blank Canvas to Production" },
+  { value: "4", label: "Industries Shipped In" },
 ];
 
 function CodeLine({ tokens, visible, delay }) {

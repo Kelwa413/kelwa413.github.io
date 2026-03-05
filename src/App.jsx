@@ -336,12 +336,10 @@ export default function App() {
       {/* Hero */}
       <header className="hero container">
         <p className="eyebrow hero-eyebrow reveal">Full-Stack Engineer</p>
-        <h1 className="headline-xl hero-headline reveal">
-          Build it right. Ship it fast.
-        </h1>
+        <h1 className="headline-xl hero-name reveal">Khalaf Elwadya</h1>
+        <p className="hero-tagline reveal">Build it right. Ship it fast.</p>
         <p className="body-lg hero-sub reveal">
-          I design and build products across mobile, web, and cloud.
-          From blank canvas to production.
+          Products across mobile, web, and cloud — from blank canvas to production.
         </p>
         <div className="hero-cta reveal">
           <a className="btn btn--primary" href="resume.pdf" download="resume.pdf">
