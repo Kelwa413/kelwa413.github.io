@@ -2,17 +2,15 @@ import { useEffect } from "react";
 import useScrollLock from "../hooks/useScrollLock";
 
 export default function Modal({ open, onClose, children }) {
-  // ✅ Hooks are ALWAYS called, regardless of `open`
   useScrollLock(open);
 
   useEffect(() => {
-    if (!open) return; // gate the effect, don't skip the hook
+    if (!open) return;
     const onKey = (e) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
-  // Rendering can be conditional AFTER hooks are called
   if (!open) return null;
 
   return (

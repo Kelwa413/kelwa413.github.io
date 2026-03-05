@@ -3,39 +3,105 @@ import "./index.css";
 import "./App.css";
 import Carousel from "./components/Carousel.jsx";
 import Modal from "./components/Modal.jsx";
-import headshot from "./assets/headshot2bw.jpeg";
+import CraftSection from "./components/CraftSection.jsx";
 
-const NAV_PRIMARY = [
-  { href: "#about", label: "About" },
-  { href: "#infinimatch", label: "Work" },
+/* ── Data ─────────────────────────────────────────────── */
+
+const NAV_LINKS = [
+  { href: "#work", label: "Work" },
+  { href: "#craft", label: "Craft" },
   { href: "#contact", label: "Contact" },
 ];
 
-const NAV_DIRECTORY = [
-  { href: "#about", label: "About" },
-  { href: "#infinimatch", label: "Infinimatch" },
-  { href: "#redmesa", label: "Red Mesa" },
-  { href: "#dialdynamics", label: "DialDynamics" },
-  { href: "#planty", label: "Planty" },
-  { href: "#csi", label: "CSI Dry Eye" },
-  { href: "#contact", label: "Contact" },
+const PROJECTS = [
+  {
+    id: "infinimatch",
+    eyebrow: "Mobile App",
+    name: "Infinimatch",
+    tagline: "AI-powered movie discovery that learns what you love.",
+    description:
+      "A native mobile app where every swipe trains a recommendation model. Built from first prototype to TestFlight beta — each session gets smarter than the last.",
+    stack: ["Angular", "Ionic", "TypeScript", "AI/ML", "TestFlight"],
+    link: { url: "https://infinimatch.app/", label: "Visit Infinimatch" },
+    images: [
+      "/infinimatch/infinimatch-left.png",
+      "/infinimatch/infinimatch-right.png",
+      "/infinimatch/infinimatch-swiper.png",
+      "/infinimatch/infinimatch-expanded.png",
+      "/infinimatch/infinimatch-liked.png",
+      "/infinimatch/infinimatch-review.png",
+      "/infinimatch/infinimatch-profile.png",
+    ],
+    portrait: true,
+    accent: "#2997ff",
+  },
+  {
+    id: "redmesa",
+    eyebrow: "AI Consulting",
+    name: "Red Mesa",
+    tagline: "Custom models built to fit your data.",
+    description:
+      "Tailored machine learning solutions — not off-the-shelf. Built for specific data, infrastructure, and workflows. Deployable on-prem or cloud.",
+    stack: ["Python", "TensorFlow", "Project Management"],
+    link: { url: "https://redmesa.dev/", label: "Visit Red Mesa" },
+    images: [
+      "/redmesa/redmesa1.png",
+      "/redmesa/redmesa2.png",
+      "/redmesa/redmesa3.png",
+    ],
+    accent: "#ff453a",
+  },
+  {
+    id: "dialdynamics",
+    eyebrow: "SaaS Platform",
+    name: "DialDynamics",
+    tagline: "AI cold-call training with real-time feedback.",
+    description:
+      "Sales simulation platform with live performance analytics. Reps practice against AI before making real calls.",
+    stack: ["Next.js", "React", "Node.js", "UX Research"],
+    link: { url: "https://www.dialdynamics.ca/", label: "Visit DialDynamics" },
+    video: "/dialdynamics-demo.mp4",
+    accent: "#30d158",
+  },
+  {
+    id: "planty",
+    eyebrow: "Hackathon Winner",
+    name: "Planty",
+    tagline: "First place. 24 hours. Zero hardware experience.",
+    description:
+      "A LEGO plant that responds to your habits — thrives when you're consistent, droops when you fall off. Built at MRU Hacks against 100+ teams.",
+    stack: ["Arduino", "Python", "Raspberry Pi"],
+    link: { url: "https://github.com/kelwa413/Planty", label: "View on GitHub" },
+    video: "/hackathon-video.mp4",
+    videoPoster: "/media/planty-thumb.png",
+    accent: "#ff9f0a",
+  },
+  {
+    id: "csi",
+    eyebrow: "Clinical SaaS",
+    name: "CSI Dry Eye",
+    tagline: "Precision tooling for ophthalmology practices.",
+    description:
+      "Full-stack clinical platform — patient assessments, treatment planning, invoicing, and export workflows built on Angular and AWS.",
+    stack: ["Angular", "TypeScript", "AWS Lambda", "DynamoDB"],
+    images: [
+      "/csi/csi-dashboard.png",
+      "/csi/csi-invoice-create.png",
+      "/csi/csi-invoice-export.png",
+      "/csi/csi-packages.png",
+      "/csi/csi-pricing.png",
+      "/csi/csi-treatment-plan.png",
+      "/csi/csi-treatment-plan-status.png",
+    ],
+    accent: "#5e5ce6",
+  },
 ];
 
-const WORK_ANCHORS = new Set([
-  "#infinimatch",
-  "#redmesa",
-  "#dialdynamics",
-  "#planty",
-  "#csi",
-]);
+const SECTION_IDS = ["#work", "#craft", "#contact"];
 
-const RED_IMAGES = [
-  "/redmesa/redmesa1.png",
-  "/redmesa/redmesa2.png",
-  "/redmesa/redmesa3.png",
-];
+/* ── Hooks ────────────────────────────────────────────── */
 
-function useProgress() {
+function useScrollProgress() {
   useEffect(() => {
     const onScroll = () => {
       const h = document.documentElement;
@@ -50,554 +116,285 @@ function useProgress() {
 
 function useReveals() {
   useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const nodes = Array.from(document.querySelectorAll(".reveal"));
+    nodes.forEach((node, idx) => {
+      node.style.setProperty("--delay", `${(idx % 8) * 60}ms`);
+    });
+
+    if (reduced) {
+      nodes.forEach((n) => n.classList.add("in"));
+      return;
+    }
+
     const io = new IntersectionObserver(
-      (entries) =>
-        entries.forEach(
-          (e) => e.isIntersecting && e.target.classList.add("in")
-        ),
-      { threshold: 0.12 }
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("in");
+          io.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
     );
-    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+    nodes.forEach((n) => io.observe(n));
     return () => io.disconnect();
   }, []);
 }
 
-function useScrollSpy(ids, offset = 84) {
-  const [active, setActive] = useState(ids[0]);
+function useScrollSpy(ids) {
+  const [active, setActive] = useState("");
 
   useEffect(() => {
-    const sects = ids.map((sel) => document.querySelector(sel)).filter(Boolean);
+    const sects = ids
+      .map((sel) => document.querySelector(sel))
+      .filter(Boolean);
 
     const compute = () => {
       const mid = window.innerHeight / 2;
-      let best = { id: ids[0], d: Infinity };
-
+      let best = { id: "", d: Infinity };
       for (const el of sects) {
-        const r = el.getBoundingClientRect();
-        const d = Math.abs(r.top - offset - mid);
+        const d = Math.abs(el.getBoundingClientRect().top - mid);
         if (d < best.d) best = { id: `#${el.id}`, d };
       }
-      setActive(best.id);
+      setActive((prev) => (prev === best.id ? prev : best.id));
     };
 
     compute();
     window.addEventListener("scroll", compute, { passive: true });
-    window.addEventListener("resize", compute);
-    window.addEventListener("hashchange", compute);
-    return () => {
-      window.removeEventListener("scroll", compute);
-      window.removeEventListener("resize", compute);
-      window.removeEventListener("hashchange", compute);
-    };
-  }, [ids, offset]);
+    return () => window.removeEventListener("scroll", compute);
+  }, [ids]);
 
   return active;
 }
 
-function useThemeSwap(map) {
-  // map: [{id, theme}]
+function useAutoPlayVideos() {
   useEffect(() => {
-    const io = new IntersectionObserver(
-      (entries) => {
-        const e = entries.find((en) => en.isIntersecting);
-        if (!e) return;
-        const theme = map.find((m) => m.id === e.target.id)?.theme;
-        if (theme) document.body.setAttribute("data-theme", theme);
-      },
-      { rootMargin: "-40% 0px -55% 0px", threshold: 0.3 }
-    );
-    map.forEach((m) => {
-      const el = document.getElementById(m.id);
-      if (el) io.observe(el);
-    });
-    return () => io.disconnect();
-  }, [map]);
-}
-
-function useAutoPlayVideos(selectors) {
-  useEffect(() => {
-    const vids = Array.from(document.querySelectorAll(selectors));
+    const vids = Array.from(document.querySelectorAll("section video"));
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
           const v = e.target;
           if (!(v instanceof HTMLVideoElement)) return;
-          if (e.isIntersecting) {
-            v.play().catch(() => {});
-          } else {
-            v.pause();
-          }
+          e.isIntersecting ? v.play().catch(() => {}) : v.pause();
         });
       },
-      { threshold: 0.6 }
+      { threshold: 0.5 }
     );
     vids.forEach((v) => io.observe(v));
     return () => io.disconnect();
-  }, [selectors]);
+  }, []);
 }
 
-export default function App() {
-  const [csiOpen, setCsiOpen] = useState(false);
-  const [redOpen, setRedOpen] = useState(false);
-  const [infinimatchOpen, setInfinimatchOpen] = useState(false);
+/* ── Components ───────────────────────────────────────── */
 
-  useProgress();
-  useReveals();
-  const active = useScrollSpy(
-    [
-      "#about",
-      "#infinimatch",
-      "#redmesa",
-      "#dialdynamics",
-      "#planty",
-      "#csi",
-      "#contact",
-    ],
-    84
+function GalleryModal({ open, onClose, images }) {
+  return (
+    <Modal open={open} onClose={onClose}>
+      <div className="lightbox">
+        <Carousel interval={5000} controls images={images} />
+      </div>
+    </Modal>
   );
-  useThemeSwap([
-    { id: "infinimatch", theme: "infinimatch" },
-    { id: "redmesa", theme: "redmesa" },
-    { id: "dialdynamics", theme: "dialdynamics" },
-    { id: "csi", theme: "csi" },
-  ]);
-  useAutoPlayVideos("section video");
+}
+
+function ProductMedia({ project, onImageClick }) {
+  if (project.video) {
+    return (
+      <div className="product-showcase product-showcase--video">
+        <video
+          playsInline
+          muted
+          controls
+          preload="metadata"
+          poster={project.videoPoster}
+        >
+          <source src={project.video} type="video/mp4" />
+        </video>
+      </div>
+    );
+  }
+
+  if (project.images) {
+    return (
+      <div
+        className={`product-showcase ${project.portrait ? "product-showcase--portrait" : ""}`}
+        role="button"
+        tabIndex={0}
+        onClick={onImageClick}
+        onKeyDown={(e) => e.key === "Enter" && onImageClick()}
+        style={{ cursor: "zoom-in" }}
+      >
+        <div className={`product-carousel ${project.portrait ? "product-carousel--portrait" : ""}`}>
+          <Carousel interval={4000} images={project.images} />
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+function ProductCard({ project }) {
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <>
-      {/* Scroll progress */}
+      <section
+        id={project.id}
+        className="product container"
+        style={{ "--product-accent": project.accent }}
+      >
+        <div className="product-intro reveal">
+          <p className="eyebrow">{project.eyebrow}</p>
+          <h2 className="headline-lg">{project.name}</h2>
+          <p className="body-lg">{project.tagline}</p>
+        </div>
+
+        <div className="reveal">
+          <ProductMedia
+            project={project}
+            onImageClick={() => setModalOpen(true)}
+          />
+        </div>
+
+        <div className="product-details reveal">
+          <div className="product-description">
+            <p className="body-md">{project.description}</p>
+            {project.link && (
+              <a
+                className="product-link"
+                href={project.link.url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {project.link.label}
+              </a>
+            )}
+          </div>
+          <div>
+            <div className="product-stack stagger reveal">
+              {project.stack.map((tech) => (
+                <span className="product-stack-pill" key={tech}>
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {project.images && (
+        <GalleryModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          images={project.images}
+        />
+      )}
+    </>
+  );
+}
+
+/* ── App ──────────────────────────────────────────────── */
+
+export default function App() {
+  useScrollProgress();
+  useReveals();
+  const active = useScrollSpy(SECTION_IDS);
+  useAutoPlayVideos();
+
+  const isWorkActive = PROJECTS.some((p) => active === `#${p.id}`) || active === "#work";
+
+  return (
+    <>
       <div className="progress" aria-hidden />
 
-      {/* Sticky Nav */}
-      <div className="nav">
+      {/* Nav */}
+      <nav className="nav">
         <div className="container nav-inner">
-          <div className="brand">Khalaf Elwadya</div>
-          <nav className="nav-primary">
-            {NAV_PRIMARY.map((n) => (
+          <a href="#" className="nav-brand">
+            Khalaf Elwadya
+          </a>
+          <div className="nav-links">
+            {NAV_LINKS.map((n) => (
               <a
                 key={n.href}
                 href={n.href}
                 className={
-                  n.href === "#infinimatch"
-                    ? WORK_ANCHORS.has(active)
-                      ? "active"
-                      : ""
-                    : active === n.href
-                    ? "active"
-                    : ""
+                  n.href === "#work"
+                    ? isWorkActive ? "active" : ""
+                    : active === n.href ? "active" : ""
                 }
-                aria-label={n.label}
               >
                 {n.label}
               </a>
             ))}
-          </nav>
+          </div>
         </div>
-      </div>
+      </nav>
 
       {/* Hero */}
-      <header className="container section" id="top">
-        <div className="hero">
-          <div className="hero-copy reveal" data-slow>
-            <div className="kicker">Full-Stack Developer • Product-minded</div>
-            <h1 className="h1">
-              Design-level development for teams that demand polish & velocity.
-            </h1>
-            <p className="lead">
-              Angular & React front-ends. Serverless on AWS. Clean data flows.
-              Thoughtful details that feel inevitable.
-            </p>
-            <div className="actions" style={{ marginTop: 18 }}>
-              <a
-                className="btn primary"
-                href="resume.pdf"
-                download="resume.pdf"
-              >
-                Download Résumé
-              </a>
-              <a className="btn" href="#infinimatch">
-                View Projects
-              </a>
-            </div>
-          </div>
-          <div className="hero-media reveal" aria-label="Portrait">
-            <img src={headshot} alt="Portrait" />
-          </div>
+      <header className="hero container">
+        <p className="eyebrow hero-eyebrow reveal">Full-Stack Engineer</p>
+        <h1 className="headline-xl hero-headline reveal">
+          Build it right. Ship it fast.
+        </h1>
+        <p className="body-lg hero-sub reveal">
+          I design and build products across mobile, web, and cloud.
+          From blank canvas to production.
+        </p>
+        <div className="hero-cta reveal">
+          <a className="btn btn--primary" href="resume.pdf" download="resume.pdf">
+            Resume
+          </a>
+          <a className="btn btn--ghost" href="#work">
+            See the work
+          </a>
         </div>
       </header>
 
-      {/* Main */}
-      <main className="container">
-        <section className="section mobile-directory reveal" aria-label="Jump links">
-          <h2>Browse Sections</h2>
-          <div className="directory-card">
-            {NAV_DIRECTORY.map((n) => (
-              <a
-                key={`mobile-${n.href}`}
-                href={n.href}
-                className={`directory-link ${
-                  active === n.href || (n.href === "#infinimatch" && WORK_ANCHORS.has(active))
-                    ? "active"
-                    : ""
-                }`}
-              >
-                <span>{n.label}</span>
-                <span aria-hidden>›</span>
-              </a>
-            ))}
-          </div>
-        </section>
+      {/* Work */}
+      <div id="work">
+        {PROJECTS.map((project) => (
+          <ProductCard key={project.id} project={project} />
+        ))}
+      </div>
 
-        {/* About */}
-        <section id="about" className="section anchor reveal">
-          <h2>About</h2>
-          <p
-            className="lead"
-            style={{ color: "var(--muted)", maxWidth: "70ch", marginTop: 8 }}
+      {/* Craft — the "how did he do that" section */}
+      <CraftSection />
+
+      {/* Contact */}
+      <section id="contact" className="section contact container">
+        <h2 className="headline-lg reveal">Get in touch.</h2>
+        <p className="body-lg reveal">
+          Open to interesting problems and product-focused teams.
+        </p>
+        <div className="contact-links reveal">
+          <a className="btn btn--primary" href="mailto:khalafelwadya@gmail.com">
+            Email me
+          </a>
+          <a
+            className="btn btn--outline"
+            href="https://github.com/kelwa413"
+            target="_blank"
+            rel="noreferrer"
           >
-            I’m a full-stack developer passionate about turning ideas into real,
-            usable products. Over the past few years, I’ve co-founded startups,
-            helped launch apps from whiteboard sketches, and built production
-            systems from client conversations alone. I love the challenge of
-            taking an early concept, translating it into a working prototype,
-            and scaling it into something people actually use.
-          </p>
-        </section>
+            GitHub
+          </a>
+          <a
+            className="btn btn--outline"
+            href="https://www.linkedin.com/in/khalaf-elwadya"
+            target="_blank"
+            rel="noreferrer"
+          >
+            LinkedIn
+          </a>
+        </div>
+      </section>
 
-        {/* Infinimatch */}
-        <section id="infinimatch" className="section anchor">
-          <h2 className="reveal">Infinimatch</h2>
-          <div className="project reveal">
-            <div
-              className="project-media portrait reveal clickable"
-              data-slow
-              role="button"
-              tabIndex={0}
-              onClick={() => setInfinimatchOpen(true)}
-              onKeyDown={(e) => e.key === "Enter" && setInfinimatchOpen(true)}
-            >
-              <Carousel
-                interval={4000}
-                images={[
-                  "/infinimatch/infinimatch-left.png",
-                  "/infinimatch/infinimatch-right.png",
-                  "/infinimatch/infinimatch-swiper.png",
-                  "/infinimatch/infinimatch-expanded.png",
-                  "/infinimatch/infinimatch-liked.png",
-                  "/infinimatch/infinimatch-review.png",
-                  "/infinimatch/infinimatch-profile.png",
-                ]}
-              />
-            </div>
-
-            <div className="project-body reveal">
-              <h3>Personalized Content Discovery</h3>
-              <p>
-                A mobile app that uses AI to recommend movies. Built from a
-                whiteboard sketch to a beta-tested app on TestFlight. Designed
-                for delight and speed— each swipe teaches the model a little
-                more about the viewer.
-              </p>
-              <div className="pills">
-                {[
-                  "Angular",
-                  "Ionic",
-                  "TypeScript",
-                  "API Integration",
-                  "AI/ML",
-                  "TestFlight",
-                ].map((t) => (
-                  <span className="pill" key={t}>
-                    {t}
-                  </span>
-                ))}
-              </div>
-              <div className="actions">
-                <a
-                  className="btn primary"
-                  href="https://infinimatch.app/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  View Website
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Infinimatch Modal Lightbox */}
-        <Modal open={infinimatchOpen} onClose={() => setInfinimatchOpen(false)}>
-          <div className="lightbox">
-            <Carousel
-              interval={5000}
-              controls
-              images={[
-                "/infinimatch/infinimatch-left.png",
-                "/infinimatch/infinimatch-right.png",
-                "/infinimatch/infinimatch-swiper.png",
-                "/infinimatch/infinimatch-expanded.png",
-                "/infinimatch/infinimatch-liked.png",
-                "/infinimatch/infinimatch-review.png",
-                "/infinimatch/infinimatch-profile.png",
-              ]}
-            />
-          </div>
-        </Modal>
-
-        {/* Red Mesa */}
-        <section id="redmesa" className="section anchor">
-          <h2 className="reveal">Red Mesa</h2>
-
-          <div className="project flip reveal">
-            {/* Clickable media opens modal */}
-            <div
-              className="project-media reveal clickable"
-              data-slow
-              role="button"
-              tabIndex={0}
-              onClick={() => setRedOpen(true)}
-              onKeyDown={(e) => e.key === "Enter" && setRedOpen(true)}
-            >
-              <Carousel interval={4000} images={RED_IMAGES} />
-            </div>
-
-            <div className="project-body reveal">
-              <h3>Custom Recommendation Engines</h3>
-              <p>
-                Red Mesa creates custom AI solutions that fit your business
-                needs. Efficient, focused, and integration ready, our solutions
-                solve real problems without unnecessary complexity. We don’t
-                deliver one-size-fits-all LLMs. Instead, we tailor lightweight
-                systems to your data and infrastructure, deployable on the cloud
-                or on premises.
-              </p>
-              <div className="pills">
-                {[
-                  "Python",
-                  "TensorFlow",
-                  "Project Management",
-                  "Requirements Gathering",
-                ].map((t) => (
-                  <span className="pill" key={t}>
-                    {t}
-                  </span>
-                ))}
-              </div>
-              <div className="actions">
-                <a
-                  className="btn primary"
-                  href="https://redmesa.dev/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  View Website
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <Modal open={redOpen} onClose={() => setRedOpen(false)}>
-          <div className="lightbox">
-            <Carousel interval={5000} controls images={RED_IMAGES} />
-          </div>
-        </Modal>
-
-        {/* DialDynamics */}
-        <section id="dialdynamics" className="section anchor">
-          <h2 className="reveal">DialDynamics</h2>
-          <div className="project reveal">
-            <div className="project-media reveal" data-slow>
-              <video
-                playsInline
-                muted
-                controls
-                poster="https://picsum.photos/1280/800?random=33"
-              >
-                <source src="public/dialdynamics-demo.mp4" type="video/mp4" />
-              </video>
-            </div>
-            <div className="project-body reveal">
-              <h3>AI-Aided Cold-Calling Trainer</h3>
-              <p>
-                DialDynamics is an AI-powered platform designed to help sales
-                professionals practice and perfect their cold-calling skills
-                through real-time simulations, feedback, and analytics.
-              </p>
-              <div className="pills">
-                {["Next.js/React", "Node", "Scoring engine", "UX research"].map(
-                  (t) => (
-                    <span className="pill" key={t}>
-                      {t}
-                    </span>
-                  )
-                )}
-              </div>
-              <div className="actions">
-                <a
-                  className="btn primary"
-                  href="https://www.dialdynamics.ca/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Website
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Hackathon Win — Planty */}
-        <section id="planty" className="section anchor">
-          <h2 className="reveal">Hackathon Win — Planty</h2>
-          <div className="project flip reveal">
-            <div className="project-media portrait fit reveal" data-slow>
-              <video
-                playsInline
-                muted
-                controls
-                preload="metadata"
-                poster="/media/planty-thumb.png"
-              >
-                <source src="/hackathon-video.mp4" type="video/mp4" />
-              </video>
-            </div>
-
-            <div className="project-body reveal">
-              <h3>🏆 MRU Hacks 2025 — “Planty”</h3>
-              <p>
-                A real LEGO plant that reacts to your habits — stay consistent
-                and it thrives, fall off and it droops. Built in 24 hours with
-                zero hardware experience; won first place out of over 100
-                participants.
-              </p>
-              <div className="pills">
-                {["Arduino", "Python", "Hardware", "Raspberry Pi"].map((t) => (
-                  <span className="pill" key={t}>
-                    {t}
-                  </span>
-                ))}
-              </div>
-              <div className="actions">
-                <a
-                  className="btn primary"
-                  href="https://github.com/kelwa413/Planty"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  View GitHub Repo
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* CSI Dry Eye section */}
-        <section id="csi" className="section anchor">
-          <h2 className="reveal">CSI Dry Eye</h2>
-
-          <div className="project reveal">
-            {/* Clickable media opens modal */}
-            <div
-              className="project-media reveal clickable"
-              data-slow
-              role="button"
-              tabIndex={0}
-              onClick={() => setCsiOpen(true)}
-              onKeyDown={(e) => e.key === "Enter" && setCsiOpen(true)}
-            >
-              <Carousel
-                interval={4000}
-                images={[
-                  "/csi/csi-dashboard.png",
-                  "/csi/csi-invoice-create.png",
-                  "/csi/csi-invoice-export.png",
-                  "/csi/csi-packages.png",
-                  "/csi/csi-pricing.png",
-                  "/csi/csi-treatment-plan.png",
-                  "/csi/csi-treatment-plan-status.png",
-                ]}
-              />
-            </div>
-
-            <div className="project-body reveal">
-              <h3>Clinical SaaS for Dry Eye Workflows</h3>
-              <p>
-                CSI Dry Eye is a clinical SaaS platform for ophthalmology
-                practices, supporting assessments, invoicing, and treatment
-                planning. I design and implement full-stack features across
-                Angular and AWS to optimize reliability and clinic efficiency.
-              </p>
-
-              <div className="pills">
-                {[
-                  "Angular",
-                  "TypeScript",
-                  "AWS Lambda",
-                  "DynamoDB",
-                  "UI/UX Design",
-                ].map((t) => (
-                  <span className="pill" key={t}>
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* CSI modal lightbox */}
-        <Modal open={csiOpen} onClose={() => setCsiOpen(false)}>
-          <div className="lightbox">
-            <Carousel
-              interval={5000}
-              controls
-              images={[
-                "/csi/csi-dashboard.png",
-                "/csi/csi-invoice-create.png",
-                "/csi/csi-invoice-export.png",
-                "/csi/csi-packages.png",
-                "/csi/csi-pricing.png",
-                "/csi/csi-treatment-plan.png",
-                "/csi/csi-treatment-plan-status.png",
-              ]}
-            />
-          </div>
-        </Modal>
-
-        {/* Contact */}
-        <section id="contact" className="section anchor reveal">
-          <h2>Contact</h2>
-          <p className="lead" style={{ color: "var(--muted)" }}>
-            Open to roles where quality and velocity matter. Prefer
-            product-focused teams.
-          </p>
-          <div className="actions" style={{ marginTop: 12 }}>
-            <a className="btn primary" href="mailto:khalafelwadya@example.com">
-              Email me
-            </a>
-            <a
-              className="btn"
-              href="https://github.com/kelwa413"
-              target="_blank"
-              rel="noreferrer"
-            >
-              GitHub
-            </a>
-            <a
-              className="btn"
-              href="https://linkedin.com/in/khalafelwadya"
-              target="_blank"
-              rel="noreferrer"
-            >
-              LinkedIn
-            </a>
-          </div>
-        </section>
-      </main>
-
-      <footer className="footer">Khalaf Elwadya — Built with intent.</footer>
+      <footer className="footer">
+        Khalaf Elwadya - Built With Intent
+      </footer>
     </>
   );
 }

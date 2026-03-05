@@ -6,9 +6,12 @@ export default function Carousel({
   controls = false,
 }) {
   const [index, setIndex] = useState(0);
-  const timerRef = useRef();
+  const timerRef = useRef(null);
+  const carouselRef = useRef(null);
 
   useEffect(() => {
+    if (!images.length) return;
+
     const start = () => {
       clearInterval(timerRef.current);
       timerRef.current = setInterval(() => {
@@ -18,7 +21,7 @@ export default function Carousel({
     const stop = () => clearInterval(timerRef.current);
 
     start();
-    const el = document.querySelector(".carousel");
+    const el = carouselRef.current;
     el?.addEventListener("mouseenter", stop);
     el?.addEventListener("mouseleave", start);
     return () => {
@@ -32,7 +35,7 @@ export default function Carousel({
   const next = () => setIndex((i) => (i + 1) % images.length);
 
   return (
-    <div className="carousel">
+    <div className="carousel" ref={carouselRef}>
       {images.map((src, i) => (
         <img
           key={src}
