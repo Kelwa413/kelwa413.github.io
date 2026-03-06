@@ -76,7 +76,6 @@ const PROJECTS = [
       label: "View on GitHub",
     },
     video: "/hackathon-video.mp4",
-    videoPoster: "/media/planty-thumb.png",
     accent: "#ff9f0a",
   },
   {
@@ -210,7 +209,6 @@ function ProductMedia({ project, onImageClick }) {
           muted
           controls
           preload="metadata"
-          poster={project.videoPoster}
         >
           <source src={project.video} type="video/mp4" />
         </video>
