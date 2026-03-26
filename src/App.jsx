@@ -4,6 +4,7 @@ import "./App.css";
 import Carousel from "./components/Carousel.jsx";
 import Modal from "./components/Modal.jsx";
 import CraftSection from "./components/CraftSection.jsx";
+import { KytChatBubble } from "kyt-chat";
 
 /* ── Data ─────────────────────────────────────────────── */
 
@@ -71,7 +72,10 @@ const PROJECTS = [
     description:
       "A LEGO plant that responds to your habits — thrives when you're consistent, droops when you fall off. Built at MRU Hacks against 100+ teams.",
     stack: ["Arduino", "Python", "Raspberry Pi"],
-    link: { url: "https://github.com/kelwa413/Planty", label: "View on GitHub" },
+    link: {
+      url: "https://github.com/kelwa413/Planty",
+      label: "View on GitHub",
+    },
     video: "/hackathon-video.mp4",
     videoPoster: "/media/planty-thumb.png",
     accent: "#ff9f0a",
@@ -116,7 +120,9 @@ function useScrollProgress() {
 
 function useReveals() {
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     const nodes = Array.from(document.querySelectorAll(".reveal"));
     nodes.forEach((node, idx) => {
       node.style.setProperty("--delay", `${(idx % 8) * 60}ms`);
@@ -135,7 +141,7 @@ function useReveals() {
           io.unobserve(entry.target);
         });
       },
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
     );
     nodes.forEach((n) => io.observe(n));
     return () => io.disconnect();
@@ -146,9 +152,7 @@ function useScrollSpy(ids) {
   const [active, setActive] = useState("");
 
   useEffect(() => {
-    const sects = ids
-      .map((sel) => document.querySelector(sel))
-      .filter(Boolean);
+    const sects = ids.map((sel) => document.querySelector(sel)).filter(Boolean);
 
     const compute = () => {
       const mid = window.innerHeight / 2;
@@ -168,6 +172,15 @@ function useScrollSpy(ids) {
   return active;
 }
 
+function useHashScroll() {
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash) return;
+    const el = document.querySelector(hash);
+    if (el) el.scrollIntoView({ behavior: "instant" });
+  }, []);
+}
+
 function useAutoPlayVideos() {
   useEffect(() => {
     const vids = Array.from(document.querySelectorAll("section video"));
@@ -179,7 +192,7 @@ function useAutoPlayVideos() {
           e.isIntersecting ? v.play().catch(() => {}) : v.pause();
         });
       },
-      { threshold: 0.5 }
+      { threshold: 0.5 },
     );
     vids.forEach((v) => io.observe(v));
     return () => io.disconnect();
@@ -225,7 +238,9 @@ function ProductMedia({ project, onImageClick }) {
         onKeyDown={(e) => e.key === "Enter" && onImageClick()}
         style={{ cursor: "zoom-in" }}
       >
-        <div className={`product-carousel ${project.portrait ? "product-carousel--portrait" : ""}`}>
+        <div
+          className={`product-carousel ${project.portrait ? "product-carousel--portrait" : ""}`}
+        >
           <Carousel interval={4000} images={project.images} />
         </div>
       </div>
@@ -300,10 +315,12 @@ function ProductCard({ project }) {
 export default function App() {
   useScrollProgress();
   useReveals();
+  useHashScroll();
   const active = useScrollSpy(SECTION_IDS);
   useAutoPlayVideos();
 
-  const isWorkActive = PROJECTS.some((p) => active === `#${p.id}`) || active === "#work";
+  const isWorkActive =
+    PROJECTS.some((p) => active === `#${p.id}`) || active === "#work";
 
   return (
     <>
@@ -322,8 +339,12 @@ export default function App() {
                 href={n.href}
                 className={
                   n.href === "#work"
-                    ? isWorkActive ? "active" : ""
-                    : active === n.href ? "active" : ""
+                    ? isWorkActive
+                      ? "active"
+                      : ""
+                    : active === n.href
+                      ? "active"
+                      : ""
                 }
               >
                 {n.label}
@@ -339,10 +360,15 @@ export default function App() {
         <h1 className="headline-xl hero-name reveal">Khalaf Elwadya</h1>
         <p className="hero-tagline reveal">Build it right. Ship it fast.</p>
         <p className="body-lg hero-sub reveal">
-          Products across mobile, web, and cloud — from blank canvas to production.
+          Products across mobile, web, and cloud — from blank canvas to
+          production.
         </p>
         <div className="hero-cta reveal">
-          <a className="btn btn--primary" href="resume.pdf" download="resume.pdf">
+          <a
+            className="btn btn--primary"
+            href="resume.pdf"
+            download="resume.pdf"
+          >
             Resume
           </a>
           <a className="btn btn--ghost" href="#work">
@@ -390,9 +416,28 @@ export default function App() {
         </div>
       </section>
 
-      <footer className="footer">
-        Khalaf Elwadya - Built With Intent
-      </footer>
+      <footer className="footer">Khalaf Elwadya - Built With Intent</footer>
+
+      <KytChatBubble
+        config={{
+          queryUrl: "https://empty-sky-63a0.khalafelwadya.workers.dev/query",
+          topicId: "5908cd11-d914-4f97-9690-1e02f634a332",
+          title: "Ask Khalaf's portfolio",
+          welcomeMessage:
+            "Hey! Ask me anything about Khalaf's work, skills, or projects.",
+          placeholder: "Ask about a project, skill, or background…",
+          faqs: [
+            "What projects has Khalaf shipped?",
+            "What's his tech stack?",
+            "Is he open to new roles?",
+            "Tell me about DialDynamics",
+          ],
+          primaryColor: "#2997ff",
+          theme: "dark",
+          avatarLabel: "K",
+          hint: "Powered by Khalaf's portfolio",
+        }}
+      />
     </>
   );
 }
